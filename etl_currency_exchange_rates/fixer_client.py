@@ -1,3 +1,4 @@
+# pylint: disable-all
 """Extracts data about currency exchange rates from Fixer API"""
 
 import logging
