@@ -16,12 +16,12 @@ isort = ">=5.10.1"
 line-length = 120
 
 [tool.poe.tasks]
-isort = "isort etl-currency-exchange-rates/ main.py"
-isort-check = "isort --check etl-currency-exchange-rates/ main.py"
-black = "black etl-currency-exchange-rates/ main.py"
-black-check = "black --check etl-currency-exchange-rates/ main.py"
+isort = "isort etl_currency_exchange_rates/ main.py"
+isort-check = "isort --check etl_currency_exchange_rates/ main.py"
+black = "black etl_currency_exchange_rates/ main.py"
+black-check = "black --check etl_currency_exchange_rates/ main.py"
 
-pylint = "pylint etl-currency-exchange-rates/ main.py"
+pylint = "pylint etl_currency_exchange_rates/ main.py"
 
 format = ["isort", "black"]
 lint = ["isort-check", "black-check", "pylint"]
@@ -30,3 +30,5 @@ run = "python -um main"
 
 [tool.poetry.dependencies]
 python = "^3.9,<=3.11"
+requests = "^2.31.0"
+backoff = "^2.2.1"
