@@ -19,7 +19,7 @@ class ECBClient:
 
     def __init__(self):
         self.granularity = "D"
-        self.target_currency = "EUR"
+        self.base_currency = "EUR"
         self.session = requests.Session()
 
         self.base_url = "https://data-api.ecb.europa.eu/service/data/EXR/"
@@ -30,7 +30,7 @@ class ECBClient:
             "format": "jsondata",
         }
 
-    def generate_resource(self, base_currency):
+    def generate_resource(self, target_currency):
         """
         Generate resource for European Central Bank API
         """
@@ -42,7 +42,7 @@ class ECBClient:
         # - the type of exchange rates (e.g. foreign exchange reference rates - code SP00);
         # - the Time series variation (e.g. average or standardised measure for a given frequency - code A).
 
-        resource = f"{self.granularity}.{base_currency}.{self.target_currency}.SP00.A"
+        resource = f"{self.granularity}.{target_currency}.{self.base_currency}.SP00.A"
 
         return resource
 
@@ -69,10 +69,10 @@ class ECBClient:
         rates = (rate[0] for rate in content["dataSets"][0]["series"]["0:0:0:0:0"]["observations"].values())
         return dict(zip(dates, rates))
 
-    def get_currency_exchange_rate(self, base_currency, start_date):
+    def get_currency_exchange_rate(self, target_currency, start_date):
         """Get base currency exchange rates from European Central Bank API"""
 
-        resource = self.generate_resource(base_currency)
+        resource = self.generate_resource(target_currency)
         url = urljoin(self.base_url, resource)
 
         logger.info("Requesting currency exchange rates from ECB")
@@ -83,8 +83,8 @@ class ECBClient:
         return [
             {
                 "date": key,
-                "base_currency": base_currency,
-                "target_currency": self.target_currency,
+                "base_currency": self.base_currency,
+                "target_currency": target_currency,
                 "exchange_rate": value,
             }
             for key, value in cln_response.items()
