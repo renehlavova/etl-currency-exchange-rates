@@ -64,7 +64,7 @@ class ECBTransformator:
         base_data = {}
 
         for date, currency_rates in data.items():
-            base_data[date] = {"USD": 1.0}
+            base_data[date] = {base_currency: 1.0}
 
             for currency, currency_rate in currency_rates.items():
                 if currency != base_currency:
