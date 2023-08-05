@@ -1,7 +1,7 @@
 """Extracts data about currency exchange rates from European Central Bank API"""
 
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 from urllib.parse import urljoin
 
 import backoff
@@ -70,7 +70,7 @@ class ECBClient:
         return dict(zip(dates, rates))
 
     def get_currency_exchange_rate(self, target_currency, start_date):
-        """Get base currency exchange rates from European Central Bank API"""
+        """Get currency exchange rates from European Central Bank API as a list of dicts"""
 
         resource = self.generate_resource(target_currency)
         url = urljoin(self.base_url, resource)
@@ -89,3 +89,39 @@ class ECBClient:
             }
             for key, value in cln_response.items()
         ]
+
+    def fill_missing_dates(self, data):
+        """Fill missing conversions with the last known, typically during weekends and holidays"""
+
+        all_dates = {entry["date"]: entry for entry in data}
+        end_date = datetime.today()
+        complete_data = []
+        current_date = datetime.strptime(min(all_dates), "%Y-%m-%d")
+        last_conversion = None
+
+        while current_date <= end_date:
+            date_str = current_date.strftime("%Y-%m-%d")
+            if date_str in all_dates:
+                last_conversion = all_dates[date_str]
+
+            if last_conversion is not None:
+                complete_data.append(
+                    {
+                        "date": date_str,
+                        "base_currency": last_conversion["base_currency"],
+                        "target_currency": last_conversion["target_currency"],
+                        "exchange_rate": last_conversion["exchange_rate"],
+                    }
+                )
+
+            current_date += timedelta(days=1)
+
+        return complete_data
+
+    def list_currency_exchange_rates(self, target_currency, start_date):
+        """Prepare final raw dataset"""
+
+        raw_currency_exchange_rate = self.get_currency_exchange_rate(target_currency, start_date)
+        prep_currency_exchange_rate = self.fill_missing_dates(raw_currency_exchange_rate)
+
+        return prep_currency_exchange_rate
