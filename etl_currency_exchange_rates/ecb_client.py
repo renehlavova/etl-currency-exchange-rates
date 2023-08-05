@@ -50,7 +50,6 @@ class ECBClient:
     def get_response(self, endpoint, params):
         """Get response from European Central Bank API"""
 
-        logger.info("Requesting %s", endpoint)  # smazat
         response = self.session.get(endpoint, params=params, timeout=60)
 
         try:
