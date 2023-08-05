@@ -43,7 +43,7 @@ class ECBTransformator:
 
         return result
 
-    def set_base_currency(self, data, base_currency):
+    def _set_base_currency(self, data, base_currency):
         """
         Get daily exchange rates with selected base currency and EUR as target currency
         to be used for conversion to other currencies
@@ -59,7 +59,7 @@ class ECBTransformator:
         or similarly = (1 / EUR to USD) * (EUR to CZK)
         """
 
-        conversion_dict = self.set_base_currency(data, base_currency)
+        conversion_dict = self._set_base_currency(data, base_currency)
 
         base_data = {}
 
