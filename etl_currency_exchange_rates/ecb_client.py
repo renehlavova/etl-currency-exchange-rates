@@ -74,8 +74,6 @@ class ECBClient:
         resource = self._generate_resource(target_currency)
         url = urljoin(self.base_url, resource)
 
-        logger.info("Requesting currency exchange rates from ECB")
-
         response = self._get_response(url, params={"startPeriod": start_date})
         cln_response = self._clean_response(response)
 
