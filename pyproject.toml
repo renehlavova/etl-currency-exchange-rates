@@ -29,7 +29,7 @@ lint = ["isort-check", "black-check", "pylint"]
 run = "python -um main"
 
 [tool.poetry.dependencies]
-python = "^3.9,<=3.11"
+python = "^3.9,<=3.12"
 requests = "^2.31.0"
 backoff = "^2.2.1"
 psycopg2 = "^2.9.6"

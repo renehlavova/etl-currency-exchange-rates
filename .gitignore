@@ -3,6 +3,7 @@ config.json
 service-account.json
 output/
 input/
+postgres-data/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
