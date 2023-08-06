@@ -1,6 +1,5 @@
 """Main entrypoint for the etl-currency-exchange-rate package"""
 
-import json
 import logging
 
 from etl_currency_exchange_rates.ecb_client import ECBClient
@@ -49,13 +48,12 @@ def main():
 
     # TRANSFORMATION STEP
 
-    transformator = ECBTransformator()
+    transformator = ECBTransformator(raw_data)
+    transformator.calculate_base_currency(base_currency)
+    transformator.calculate_base_currency("CZK", from_currency="USD")
 
-    invert_conversion = transformator.from_eur_to_currency(raw_data)
-    eur_data = transformator.group_currencies_by_date(invert_conversion)
-    usd_data = transformator.calculate_base_currency(eur_data, base_currency)
-
-    print(json.dumps(usd_data, indent=2))
+    for line in transformator:
+        print(line)
 
 
 if __name__ == "__main__":
