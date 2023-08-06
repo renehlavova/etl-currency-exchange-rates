@@ -30,7 +30,7 @@ class ECBClient:
             "format": "jsondata",
         }
 
-    def generate_resource(self, target_currency):
+    def _generate_resource(self, target_currency):
         """
         Generate resource for European Central Bank API
         """
@@ -47,7 +47,7 @@ class ECBClient:
         return resource
 
     @backoff.on_exception(backoff.expo, requests.HTTPError, max_tries=5)
-    def get_response(self, endpoint, params):
+    def _get_response(self, endpoint, params):
         """Get response from European Central Bank API"""
 
         response = self.session.get(endpoint, params=params, timeout=60)
@@ -61,23 +61,23 @@ class ECBClient:
 
         return response.json()
 
-    def clean_response(self, content):
+    def _clean_response(self, content):
         """Clean response to return dict with dates as keys and rates as values"""
 
         dates = (date["id"] for date in content["structure"]["dimensions"]["observation"][0]["values"])
         rates = (rate[0] for rate in content["dataSets"][0]["series"]["0:0:0:0:0"]["observations"].values())
         return dict(zip(dates, rates))
 
-    def get_currency_exchange_rate(self, target_currency, start_date):
+    def _get_currency_exchange_rate(self, target_currency, start_date):
         """Get currency exchange rates from European Central Bank API as a list of dicts"""
 
-        resource = self.generate_resource(target_currency)
+        resource = self._generate_resource(target_currency)
         url = urljoin(self.base_url, resource)
 
         logger.info("Requesting currency exchange rates from ECB")
 
-        response = self.get_response(url, params={"startPeriod": start_date})
-        cln_response = self.clean_response(response)
+        response = self._get_response(url, params={"startPeriod": start_date})
+        cln_response = self._clean_response(response)
 
         return [
             {
@@ -89,7 +89,7 @@ class ECBClient:
             for key, value in cln_response.items()
         ]
 
-    def fill_missing_dates(self, data):
+    def _fill_missing_dates(self, data):
         """Fill missing conversions with the last known, typically during weekends and holidays"""
 
         all_dates = {entry["date"]: entry for entry in data}
@@ -120,7 +120,7 @@ class ECBClient:
     def list_currency_exchange_rates(self, target_currency, start_date):
         """Prepare final raw dataset"""
 
-        raw_currency_exchange_rate = self.get_currency_exchange_rate(target_currency, start_date)
-        prep_currency_exchange_rate = self.fill_missing_dates(raw_currency_exchange_rate)
+        raw_currency_exchange_rate = self._get_currency_exchange_rate(target_currency, start_date)
+        prep_currency_exchange_rate = self._fill_missing_dates(raw_currency_exchange_rate)
 
         return prep_currency_exchange_rate
