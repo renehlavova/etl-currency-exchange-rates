@@ -8,6 +8,21 @@ import psycopg2
 logger = logging.getLogger(__name__)
 
 
+def ichunk(generator, chunk_size):
+    """Yield chunks from generator of chunksize."""
+    chunk = []
+
+    for item in generator:
+        chunk.append(item)
+
+        if len(chunk) == chunk_size:
+            yield chunk
+            chunk = []
+
+    if chunk:
+        yield chunk
+
+
 class PostgreSQLWriter:
     """Writer class for PostgreSQL database."""
 
@@ -152,6 +167,9 @@ class PostgreSQLWriter:
         self.create_table(table_name)
         tmp_name = f"tmp_{uuid4().hex}"
         self.create_table(tmp_name)
-        self.insert_data(tmp_name, data)
+
+        for chunk in ichunk(data, 1000):
+            self.insert_data(tmp_name, chunk)
+
         self.upsert_data(tmp_name, table_name)
         self.delete_table(tmp_name)
