@@ -74,7 +74,13 @@ See [`pyproject.toml`](./pyproject.toml)
 
 ## How to use it
 
-Run using docker compose - it creates a local PostgreSQL database and runs the ETL.
+You need to provide POSTGRES_USER and POSTGRES_PASSWORD and run using:
+
+```console
+poe run
+```
+
+Or using docker compose:
 
 ```console
 docker compose run ecb
@@ -85,6 +91,22 @@ The data are saved in `./postgres-data`. To shutdown PostgreSQL, run:
 docker compose down
 ```
 
+When running using docker compose, the following setup is used:
+```console
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_HOST=localhost
+POSTGRES_DATABASE=postgres
+POSTGRES_PORT=5432
+POSTGRES_SCHEMA=public
+```
+
+**Optional**:
+- TARGET_TABLE: Default value is `currency_exchange_rates`.
+- START_DATE: The data will be fetched from this date onwards. Default value is `2023-01-01`.
+- BASE_CURRENCIES: Multiple currencies can be provided, separated by commas. Default value is `USD,CZK`.
+- TARGET_CURRENCIES: Specifies the target currencies to which the base currencies will be converted. Multiple currencies can be provided, separated by commas. Default value is `CZK,USD,PLN,NOK,RON,ISK,SEK,CHF,TRY,BGN,HUF,DKK,GBP,CAD,AUD`.
+
 ### Installation
 
 Install this project using `poetry`.
@@ -93,7 +115,7 @@ Install this project using `poetry`.
 poetry install
 ```
 
-### Commands
+### Other commands
 
 * `poe isort`
   * sort imports using `isort`
@@ -109,5 +131,3 @@ poetry install
   * run `isort` and `black` in succession
 * `poe lint`
   * run `isort-check`, `black-check`, `pylint` in succession
-* `poe run`
-  * run the project
