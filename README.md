@@ -74,6 +74,16 @@ See [`pyproject.toml`](./pyproject.toml)
 
 ## How to use it
 
+### Installation
+
+Install this project using `poetry`.
+
+```console
+poetry install
+```
+
+### Run
+
 You need to provide POSTGRES_USER and POSTGRES_PASSWORD and run using:
 
 ```console
@@ -106,11 +116,3 @@ POSTGRES_SCHEMA=public
 - START_DATE: The data will be fetched from this date onwards. Default value is `2023-01-01`.
 - BASE_CURRENCIES: Multiple currencies can be provided, separated by commas. Default value is `USD,CZK`.
 - TARGET_CURRENCIES: Specifies the target currencies to which the base currencies will be converted. Multiple currencies can be provided, separated by commas. Default value is `CZK,USD,PLN,NOK,RON,ISK,SEK,CHF,TRY,BGN,HUF,DKK,GBP,CAD,AUD`.
-
-### Installation
-
-Install this project using `poetry`.
-
-```console
-poetry install
-```
