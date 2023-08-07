@@ -74,15 +74,11 @@ See [`pyproject.toml`](./pyproject.toml)
 
 ## How to use it
 
-### Installation
-
 Install this project using `poetry`.
 
 ```console
 poetry install
 ```
-
-### Run
 
 You need to provide POSTGRES_USER and POSTGRES_PASSWORD and run using:
 
