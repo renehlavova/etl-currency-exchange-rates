@@ -5,34 +5,6 @@
 
 ## Description
 
-This package prepares a currency exchange rates table. Since there are multiple sources for data, my reasoning was as following:
-
-- I was primarily inclined to look for the primary source, i.e. ECB Bank 
-- I also checked third-party APIs such as Fixer API or Exchange Rates API which provided the data in the desired structure (and as a reference, KBC uses Fixer for their component which was a good starting point to check), but I decided not to use them due to limitations in their free versions
-    - limited number of API calls
-    - supported only http
-    - not possible to change base currency
-- I was also searching for US sources as based on the assignment, the USD currency seems to be the reference currency
-    - I eventually decided to use the ECB and two-way conversion (USD -> EUR -> target currency)
-
-I chose ETL over ELT approach because:
-
-- The historical currency exchange rates remain unchanged, with updates only affecting the latest day's rates. Since the transformation requirements are consistent across historical data, it makes sense to perform the necessary transformations during the extraction phase itself, allowing the data to be directly prepared in the desired structure before loading.
-- The amount of currency exchange rate data is not substantial, and we can predict the data volume. Given the manageable size of the dataset, the transformation process can be efficiently handled during the extraction stage without the need for an additional transformation layer in the database.
-
-By leveraging the ETL approach under these circumstances, we can avoid unnecessary complexities associated with ELT. 
-
-The selection of solution and approach:
-
-- The solution is broken down into three components (ECBClient, ECBTransformator, and PostgreSQLWriter), each responsible for specific tasks: easy maintenance, debugging, and future enhancements
-- The solution fetches data directly from the European Central Bank (ECB), ensuring accurate and reliable up-to-date currency exchange rates
-- The solution allows users to select various base currencies for conversion, making it adaptable to different currency conversion requirements
-
-Communication, what value the final data could have:
-
-- The data is valuable for financial reporting, budgeting, and forecasting, i.e. for businesses operating in multiple countries + market insights and other analyses related to currencies
-- I would highlight the reliability of the source data and automated daily extracts with latest up-to-date rates, consistent and easy format ready for further analysis
-
 ### What it is used for
 
 ETL module is used for simple extraction, transformation and load of currency exchange rates data from public API.
